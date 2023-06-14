@@ -2,7 +2,11 @@ const express = require('express');
 const cors = require("cors");
 require('./db/config');
 const User = require("./db/User");
-const Category = require("./db/category")
+const Category = require("./db/category");
+
+const Jwt = require('jsonwebtoken');
+const jwtKey = 'newspaper';
+
 
 const app = express();
 app.use(express.json());
@@ -27,8 +31,13 @@ app.post("/login", async (req, res) => {
         
         let user = await User.findOne(req.body).select("-password");
         if (user) {
-    
-            res.send(user);
+            Jwt.sign({user},jwtKey,{expiresIn:"2h"},(err,token)=>{
+                if(err){
+                    res.send({ result: "Something went wrong" })
+                }
+                res.send({user,auth:token})
+            })
+            // res.send(user);
         }
         else {
             res.send({ result: "No user Found" })
