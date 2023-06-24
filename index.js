@@ -64,6 +64,22 @@ app.delete("/user/:id",async(req,res)=>{
 })
 
 
+app.get("/user/:id",async(req,res)=>{
+    const result = await User.findOne({_id:req.params.id});
+    if (result) {
+        
+        res.send(result);
+    }else{
+        res.send({result:"No User Found"})
+    }
+})
+
+app.put("/user/:id",async(req,res)=>{
+    const result = await User.updateOne({_id:req.params.id},{$set:req.body});
+    res.send(result);
+})
+
+
 
 
 app.post("/category",async(req,res)=>{
